@@ -2,8 +2,10 @@ const reservation = {
     tourId: String,
     contactInfo: {
         clientId: String,
-        email: String
+        email: String,
+        phoneNumber: String
     },
+    dateOfTravel: String,
     members: [{
         name: String,
         lastName: String,
@@ -12,6 +14,16 @@ const reservation = {
     }],
     transport: {
         mean: String,
-    }
-
+        startDestination: {
+            country: String,
+            state: String,
+            city: String
+        },
+        endDestination: {
+            country: String,
+            state: String,
+            city: String
+        }
+    },
+    createdAt: String
 }

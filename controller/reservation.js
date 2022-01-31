@@ -1,15 +1,18 @@
 const Reservation = require('../model/reservation');
 const reservations = [];
 
+const moment = require('moment');
+
 function registerReservation(req, res) {
-    console.log('Called endpoint to register a reservation');
-    const { tourId, contactInfo, members, transport } = req.body;
+    const { tourId, contactInfo, dateOfTravel, members, transport } = req.body;
 
     const reservation = Object.create(Reservation);
     reservation.tourId = tourId;
     reservation.contactInfo = contactInfo;
+    reservation.dateOfTravel = dateOfTravel;
     reservation.members = members;
     reservation.transport = transport;
+    reservation.createdAt = moment(new Date()).toString();
 
     reservations.push(reservation); //TODO: Change to DB saving
 
