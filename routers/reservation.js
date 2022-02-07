@@ -1,6 +1,6 @@
 const express = require('express');
 
-const reservationController = require('../controller/reservation');
+const reservationController = require('../controllers/reservation');
 
 const api = express.Router();
 

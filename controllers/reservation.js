@@ -1,4 +1,4 @@
-const Reservation = require('../model/reservation');
+const Reservation = require('../models/reservation');
 const reservations = [];
 
 const moment = require('moment');
