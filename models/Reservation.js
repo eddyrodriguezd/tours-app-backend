@@ -1,4 +1,7 @@
-const reservation = {
+const mongoose = require('mongoose');
+const Schema = mongoose.Schema;
+
+const ReservationSchema = Schema({
     tourId: String,
     contactInfo: {
         clientId: String,
@@ -26,4 +29,6 @@ const reservation = {
         }
     },
     createdAt: String
-}
+});
+
+module.exports = mongoose.model('Reservation', ReservationSchema);
