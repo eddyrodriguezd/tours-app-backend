@@ -3,9 +3,12 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 
+require('dotenv').config({
+    path: '.env'
+});
 
 //Load routes
-const reservationRoutes = require('./routers/reservation');
+const reservationRoutes = require('./routes/reservation');
 
 app.use(cors())
 app.use(express.json());
