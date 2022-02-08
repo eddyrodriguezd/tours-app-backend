@@ -20,5 +20,4 @@ app.listen(process.env.PORT || 8080, () => {
 
 //Router
 app.use(`/api/reservation`, reservationRoutes);
-
 module.exports = app;
