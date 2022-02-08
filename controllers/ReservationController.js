@@ -1,6 +1,6 @@
 const moment = require('moment');
 const ReservationService = require('../services/ReservationService');
-const Reservation = require('../model/Reservation');
+const Reservation = require('../models/Reservation');
 
 function registerReservation(req, res) {
     const { tourId, contactInfo, dateOfTravel, members, transport } = req.body;
