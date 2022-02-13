@@ -11,7 +11,7 @@ const ReservationSchema = Schema({
     contactInfo: {
         clientId: { type: String, required: true },
         email: { type: String, required: true },
-        phoneNumber: { type: String, required: true },
+        phoneNumber: { type: String },
     },
 
     startDate: { type: String, required: true },
@@ -39,5 +39,9 @@ const ReservationSchema = Schema({
 }, {
     timestamps: true
 });
+
+ReservationSchema.statics.findByClientId = function (clientId) {
+    return this.find({ 'contactInfo.clientId': clientId });
+};
 
 module.exports = model('Reservation', ReservationSchema);

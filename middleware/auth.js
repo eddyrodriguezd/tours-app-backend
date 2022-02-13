@@ -14,7 +14,7 @@ const checkAuth = (req, res, next) => {
 
     try {
         const payload = decodeToken(token, secret);
-        console.log('JWT Decoded: ', payload);
+        console.log('JWT Decoded: ', JSON.stringify(payload));
 
         if (payload.exp <= moment.unix()) {
             return res.status(403).send({ message: 'Token expired' });
