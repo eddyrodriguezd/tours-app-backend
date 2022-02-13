@@ -1,34 +1,43 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const { Schema, model } = require('mongoose');
 
 const ReservationSchema = Schema({
-    tourId: String,
-    contactInfo: {
-        clientId: String,
-        email: String,
-        phoneNumber: String
-    },
-    dateOfTravel: String,
-    members: [{
-        name: String,
-        lastName: String,
-        idType: String,
-        idNumber: String
-    }],
-    transport: {
-        mean: String,
-        startDestination: {
-            country: String,
-            state: String,
-            city: String
+    tour: {
+        tourId: { type: String, required: true },
+        destination: {
+            country: { type: String, required: true },
+            city: { type: String, required: true },
         },
-        endDestination: {
-            country: String,
-            state: String,
-            city: String
-        }
     },
-    createdAt: String
+    contactInfo: {
+        clientId: { type: String, required: true },
+        email: { type: String, required: true },
+        phoneNumber: { type: String, required: true },
+    },
+
+    startDate: { type: String, required: true },
+    endDate: { type: String, required: true },
+
+    members: [{
+        name: { type: String },
+        lastName: { type: String },
+        idType: { type: String },
+        idNumber: { type: String },
+    }],
+
+    hotel: {
+        name: { type: String },
+        room: {
+            category: { type: String },
+            beds: { type: Number },
+        },
+        guests: { type: Number },
+        price: {
+            amount: { type: Number },
+            currency: { type: String },
+        }
+    }
+}, {
+    timestamps: true
 });
 
-module.exports = mongoose.model('Reservation', ReservationSchema);
+module.exports = model('Reservation', ReservationSchema);

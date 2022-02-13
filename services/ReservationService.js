@@ -1,7 +1,8 @@
 const reservations = [];
+const Reservation = require('../models/Reservation');
 
 const addReservation = (reservation, user) => {
-    reservations.push(reservation); //TODO: Change to DB saving
+    return reservation.save();
 };
 
 const getReservationsByUser = (user) => {
