@@ -1,11 +1,11 @@
-const reservations = [];
+const ReservationSchema = require('../models/Reservation');
 
 const addReservation = (reservation, user) => {
-    reservations.push(reservation); //TODO: Change to DB saving
+    return reservation.save();
 };
 
 const getReservationsByUser = (user) => {
-    return reservations;
+    return ReservationSchema.findByClientId(user.id);
 }
 
 module.exports = {
