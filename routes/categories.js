@@ -4,7 +4,7 @@ const CategoriesController = require("../controllers/CategoriesController");
 
 const api = express.Router();
 
-api.post("/category", CategoriesController.register);
-api.get("/category", CategoriesController.getAll);
+api.post("/", CategoriesController.register);
+api.get("/", CategoriesController.getAll);
 
 module.exports = api;
