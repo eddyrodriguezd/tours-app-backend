@@ -5,7 +5,7 @@ const ReservationController = require('../controllers/ReservationController');
 
 const api = express.Router();
 
-api.post("/create", ReservationController.registerReservation);
-api.get("/fetch", [middleware_auth.checkAuth], ReservationController.retrieveReservationsByUser);
+api.post("/create", ReservationController.register);
+api.get("/fetch", [middleware_auth.checkAuth], ReservationController.retrieveByUser);
 
 module.exports = api;
