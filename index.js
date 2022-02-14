@@ -1,25 +1,12 @@
-const express = require("express");
-const cors = require("cors");
-
-const app = express();
-
-require("dotenv").config({ path: ".env" });
-require("./config/dbConfig");
-
-//Load routes
-const reservationRoutes = require("./routes/reservation");
-const categoriesRoutes = require("./routes/categories");
-
-app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+const app = require("./app");
+require("dotenv").config({
+  path: ".env",
+});
+const connectDatabase = require("./config/dbConfig");
 
 app.listen(process.env.PORT || 8080, () => {
-  console.log("App listening on port", process.env.PORT || 8080);
+
+  connectDatabase();
 });
 
-//Router
-app.use(`/api/reservation`, reservationRoutes);
-app.use("/api", categoriesRoutes);
-
-//module.exports = app;
+});
