@@ -1,6 +1,6 @@
 const express = require("express");
 var cors = require("cors");
-
+const cookieParser = require("cookie-parser");
 const reservation = require("./routes/reservation");
 const user = require("./routes/userRoute");
 const categories = require("./routes/categories");
@@ -14,5 +14,6 @@ app.use("/api/reservation", reservation);
 app.use("/api/", user);
 app.use("/api/category", categories);
 app.use("/api/tour", tours);
+app.use(cookieParser());
 
 module.exports = app;
