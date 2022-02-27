@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
 
 const UserSchema = new mongoose.Schema({
   name: {
@@ -22,15 +23,14 @@ const UserSchema = new mongoose.Schema({
   avatar: {
     public_id: {
       type: String,
-      required: true,
     },
     url: {
       type: String,
-      required: true,
     },
   },
   tipo: {
     type: String, //enum
+    enum: ["admin", "user"],
     default: "user",
   },
   ruc: {
@@ -68,7 +68,7 @@ UserSchema.pre("save", async function (next) {
 });
 
 UserSchema.methods.getJWTToken = function () {
-  return jwt.sign({ id: this._id, tipo: this.tipo }, process.env.JWT_SECRET, {
+  return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRE,
   });
 };
@@ -76,4 +76,15 @@ UserSchema.methods.getJWTToken = function () {
 UserSchema.methods.comparePassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
+UserSchema.methods.getResetPasswordToken = function () {
+  const resetToken = crypto.randomBytes(20).toString("hex");
+  const hashedToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+  this.resetPasswordToken = hashedToken;
+  this.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
+  return resetToken;
+};
+
 module.exports = mongoose.model("User", UserSchema);

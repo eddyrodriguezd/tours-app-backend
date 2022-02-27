@@ -1,35 +1,33 @@
-const jwt = require('jwt-simple');
-const moment = require('moment');
+const jwt = require("jsonwebtoken");
+const User = require("../models/userModel");
+exports.isAuthenticateUser = async (req, res, next) => {
+  const { token } = req.cookies;
+  if (!token) {
+    return res.status(401).json({
+      sucess: false,
+      message: "Inicie sesión para acceder a este recurso",
+    });
+  }
+  const decodeData = jwt.verify(token, process.env.JWT_SECRET);
+  req.user = await User.findById(decodeData.id);
 
-const { decodeToken } = require('../services/JwtService');
-
-const secret = process.env.JWT_SECRET_KEY;
-
-const checkAuth = (req, res, next) => {
-    if (!req.headers.authorization) {
-        return res.status(403).send({ message: 'Missing Authentication Token' });
-    }
-
-    const token = req.headers.authorization.replace(/['"]+/g, "");
-
-    try {
-        const payload = decodeToken(token, secret);
-        console.log('JWT Decoded: ', JSON.stringify(payload));
-
-        if (payload.exp <= moment.unix()) {
-            return res.status(403).send({ message: 'Token expired' });
-        }
-
-        req.user = payload;
-
-    } catch (ex) {
-        console.log('Exception while authenticating ', ex);
-        return res.status(403).send({ message: 'Invalid Token' });
-    }
-
-    next();
+  if (!req.user) {
+    return res.status(401).json({
+      sucess: false,
+      message: "reinicie sesión para acceder a este recurso",
+    });
+  }
+  next();
 };
 
-module.exports = {
-    checkAuth
+exports.authorizeRoles = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.tipo)) {
+      return res.status(401).json({
+        status: 401,
+        message: "No tienes permisos para acceder a este recurso",
+      });
+    }
+    next();
+  };
 };
