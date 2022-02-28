@@ -13,17 +13,13 @@ exports.registerUser = async (req, res) => {
     });
   }
   try {
-    const newUser = await User.create({
+    const user = await User.create({
       email,
       password,
       tipo,
       data,
     });
-
-    res.status(201).json({
-      sucess: true,
-      user: newUser,
-    });
+    sendToken(user, 201, res);
   } catch (err) {
     res.status(400).json({
       sucess: false,
