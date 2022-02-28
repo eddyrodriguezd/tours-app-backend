@@ -17,7 +17,7 @@ exports.isAuthenticateUser = async (req, res, next) => {
     decodedData = jwt.verify(token, process.env.JWT_SECRET);
   } catch (err) {
     console.log('Couldn\'t authenticate user', err);
-    if (err instanceof jwt.TokenExpiredError) {
+    if (err instanceof jwt.TokenExpiredError || err instanceof jwt.JsonWebTokenError) {
       return res.status(401).json({
         sucess: false,
         message: "Token no válido",
