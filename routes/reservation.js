@@ -6,6 +6,6 @@ const ReservationController = require("../controllers/ReservationController");
 const api = express.Router();
 
 api.post("/create", isAuthenticateUser, ReservationController.register);
-api.get("/fetch", isAuthenticateUser, authorizeRoles("admin"), ReservationController.retrieveByUser);
+api.get("/fetch", isAuthenticateUser, ReservationController.retrieveByUser);
 
 module.exports = api;
