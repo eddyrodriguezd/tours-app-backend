@@ -9,7 +9,15 @@ const tours = require("./routes/tour");
 const app = express();
 app.use(cookieParser());
 app.use(express.json());
-app.use(cors());
+
+const corsOptions = {
+    credentials: true,
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    origin: 'http://localhost:3000'
+};
+app.use(cors(corsOptions));
+
+
 app.use("/api/reservation", reservation);
 app.use("/api/", user);
 app.use("/api/category", categories);
