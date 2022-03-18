@@ -11,7 +11,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(cors());
 app.use("/api/reservation", reservation);
-app.use("/api/", user);
+app.use("/api/users", user);
 app.use("/api/category", categories);
 app.use("/api/tour", tours);
 module.exports = app;

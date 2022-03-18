@@ -11,13 +11,15 @@ exports.isAuthenticateUser = async (req, res, next) => {
     });
   }
 
-  console.log('token', token);
   let decodedData;
   try {
     decodedData = jwt.verify(token, process.env.JWT_SECRET);
   } catch (err) {
-    console.log('Couldn\'t authenticate user', err);
-    if (err instanceof jwt.TokenExpiredError || err instanceof jwt.JsonWebTokenError) {
+    console.log("Couldn't authenticate user", err);
+    if (
+      err instanceof jwt.TokenExpiredError ||
+      err instanceof jwt.JsonWebTokenError
+    ) {
       return res.status(401).json({
         sucess: false,
         message: "Token no válido",
@@ -30,7 +32,7 @@ exports.isAuthenticateUser = async (req, res, next) => {
   }
 
   req.user = await User.findById(decodedData.id);
-
+  console.log(req.user);
   if (!req.user) {
     return res.status(401).json({
       sucess: false,
@@ -67,4 +69,4 @@ const parseCookies = (request) => {
   });
 
   return list;
-}
+};
