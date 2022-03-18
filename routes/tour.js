@@ -1,3 +1,4 @@
+const { isAuthenticateUser, authorizeRoles } = require("../middleware/auth");
 const express = require("express");
 
 const multer = require("multer");
@@ -11,11 +12,16 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage });
 
-const { getTours, registerTour } = require("../controllers/TourController");
+const {
+  getTours,
+  registerTour,
+  findTour,
+} = require("../controllers/TourController");
 
 const api = express.Router();
 
 api.post("/create", upload.any("images"), registerTour);
+//api.post("/findTour", isAuthenticateUser, authorizeRoles("admin"), findTour);
 api.get("/fetch", getTours);
 
 module.exports = api;
