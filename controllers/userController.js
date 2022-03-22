@@ -1,7 +1,14 @@
 const User = require("../models/userModel");
 const sendToken = require("../utils/jwtToken");
 const sendEmail = require("../utils/sendEmail");
+const fs = require("fs");
 const crypto = require("crypto");
+const cloudinary = require("cloudinary").v2;
+cloudinary.config({
+  cloud_name: "dmorxcs1y",
+  api_key: "872881161811572",
+  api_secret: "kDnGezb0yopoQZ3SAyWObnQjBIA",
+});
 
 exports.registerUser = async (req, res) => {
   const { email, password, tipo, ...data } = req.body;
@@ -125,10 +132,89 @@ exports.resetPassword = async (req, res) => {
   sendToken(user, 200, res);
 };
 
-exports.getAllUsers = async (req, res, next) => {
+exports.getUser = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const user = await User.find({ _id: id });
+
+    return res.status(200).json({
+      success: true,
+      user,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      error: err,
+    });
+  }
+};
+exports.getAllUsers = async (req, res) => {
   const users = await User.find();
   res.status(200).json({
     success: true,
     users,
   });
+};
+/**
+ * @description: Update user data
+ * @param {req} request object
+ * @param {res} response object
+ * @returns {json}}
+ * @author : Brayanmf
+ */
+exports.updateProfile = async (req, res) => {
+  const { ...data } = req.body;
+  const { file } = req;
+  if (!file) {
+    try {
+      const user = await User.findByIdAndUpdate(
+        req.user._id,
+        { ...data },
+        { new: true }
+      );
+      return res.status(200).json({
+        success: true,
+        user,
+      });
+    } catch {
+      return res.status(400).json({
+        success: false,
+        error,
+      });
+    }
+  }
+
+  const size = file.size / 1024 / 1024;
+  if (size > 3) {
+    return res.status(400).json({
+      success: false,
+      message: "El archivo es muy grande",
+    });
+  }
+
+  try {
+    await cloudinary.uploader.destroy(req.user.avatar.public_id, {
+      resource_type: "image",
+    });
+    const result = await cloudinary.uploader.upload(file.path, {
+      tags: "user_profile",
+    });
+
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { ...data, avatar: { public_id: result.public_id, url: result.url } },
+      { new: true }
+    );
+    return res.status(200).json({
+      success: true,
+      user,
+    });
+  } catch (error) {
+    return res.status(400).json({
+      success: false,
+      error,
+    });
+  } finally {
+    fs.unlinkSync(file.path);
+  }
 };

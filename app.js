@@ -21,9 +21,11 @@ app.use(cors(corsOptions));
 
 
 app.use("/api/reservation", reservation);
+app.use("/api/users", user);
+
 app.use("/api/hotel", hotel);
 
-app.use("/api/", user);
+
 app.use("/api/category", categories);
 app.use("/api/tour", tours);
 module.exports = app;
