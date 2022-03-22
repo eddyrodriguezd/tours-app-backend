@@ -1,5 +1,16 @@
 const Tour = require("../models/Tour");
 
+async function findTourModel(field, value) {
+  try {
+    /* preguntar que hace el corchete*/
+    const query = { [field]: value };
+    return await Tour.find(query);
+  } catch (err) {
+    console.log(err);
+    return err;
+  }
+}
+
 async function addTour(tour) {
   try {
     console.log("servide");
@@ -19,4 +30,5 @@ async function getAllTours() {
 module.exports = {
   addTour,
   getAllTours,
+  findTourModel,
 };
