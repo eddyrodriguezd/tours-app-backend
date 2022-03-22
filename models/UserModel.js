@@ -45,14 +45,18 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true,
       },
+      url: {
+        type: String,
+        required: true,
+      },
     },
   ],
-  address: [
-    { country: { type: String, required: true } },
-    { state: { type: String, required: true } },
-    { city: { type: String, required: true } },
-    { street: { type: String, required: true } },
-  ],
+  address: {
+    country: { type: String },
+    tate: { type: String },
+    city: { type: String },
+    street: { type: String },
+  },
 
   webSite: {
     type: String,
