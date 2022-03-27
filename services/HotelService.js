@@ -1,5 +1,7 @@
 const axios = require("axios")
 const buildHotelRequest = require("../api/hotels/HotelRequest")
+const hash = require("../utils/hash");
+const HotelInfo = require("../api/hotels/response/HotelInfo");
 
 const getHotels = async ({ checkIn, checkOut, rooms, adults, children, city }) => {
     const payload = buildHotelRequest({ checkIn, checkOut, rooms, adults, children, city });
@@ -9,7 +11,11 @@ const getHotels = async ({ checkIn, checkOut, rooms, adults, children, city }) =
     const config = {
         headers: {
             'Api-key': process.env.HOTELS_API_KEY,
-            'X-Signature': process.env.HOTELS_API_SIGNATURE,
+            'X-Signature': hash(
+                process.env.HOTELS_API_KEY
+                .concat(process.env.HOTELS_API_SECRET)
+                .concat(Math.trunc(new Date().getTime()/1000))
+                ),
             'Accept': 'application/json',
             'Accept-Encoding': 'gzip',
             'Content-Type': 'application/json',
@@ -19,17 +25,23 @@ const getHotels = async ({ checkIn, checkOut, rooms, adults, children, city }) =
     let response;
     try {
         response = await axios.post(url, payload, config);
-        console.log('hotelsss', response.data?.hotels.hotels);
-        return response.data?.hotels.hotels;
+        console.log('hotelsss', response.data?.hotels.hotels.length);
+
+        const hotels = [];
+
+        if(response.data?.hotels.hotels != null) {
+            response.data?.hotels.hotels.map(hotel =>
+                hotels.push(
+                    new HotelInfo(hotel)
+                )
+            )
+        }
+
+        return hotels;
     }
     catch (err) {
         console.log('Error', err);
     }
-
-    /*if (response.data.status === 200) {
-        console.log('response from API', response.data?.hotels);
-        return response.data?.hotels;
-    }*/
 }
 
 module.exports = {
