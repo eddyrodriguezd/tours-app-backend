@@ -1,7 +1,8 @@
 const User = require("../models/userModel");
 const sendToken = require("../utils/jwtToken");
-const sendEmail = require("../utils/sendEmail");
+const send = require("../utils/sendEmail");
 const crypto = require("crypto");
+const jwt = require("jsonwebtoken");
 
 exports.registerUser = async (req, res) => {
   const { email, password, tipo, ...data } = req.body;
@@ -19,6 +20,19 @@ exports.registerUser = async (req, res) => {
       tipo,
       data,
     });
+    //const fullUrl = req.protocol + "://" + req.get("host") + "/user/confirm";
+    const config = {
+      templateId: "d-dc9eeacf9528476ba89bf402bb5ad859",
+      to: email,
+      from: { email: "moranrosales23@hotmail.com", name: "Tours App" },
+      dynamic_template_data: {
+        name_user: email.split("@")[0],
+        url_activar: `${
+          process.env.FRONT_URL
+        }/confirmacion/${user.getJWTToken()}`,
+      },
+    };
+    send.sendEmailTemplates(config);
     sendToken(user, 201, res);
   } catch (err) {
     res.status(400).json({
@@ -79,7 +93,7 @@ exports.forgotPassword = async (req, res) => {
 
   const message = `su token de restablecimiento de contraseña es :- \n\n ${resetPasswordUrl} \n\n si no solicitó este restablecimiento, ignore este correo electrónico`;
   try {
-    await sendEmail({
+    await send.sendEmail({
       email: user.email,
       subject: "Restablece su contraseña",
       message,
@@ -123,6 +137,28 @@ exports.resetPassword = async (req, res) => {
   user.resetPasswordExpire = undefined;
   await user.save();
   sendToken(user, 200, res);
+};
+
+exports.confirmEmail = async (req, res) => {
+  try {
+    const decoded = jwt.verify(req.params.token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id);
+    if (user.verify) {
+      res.status(400).json({
+        success: false,
+        message: "Esta cuenta ya se encuentra verificada",
+      });
+    } else {
+      user.verify = true;
+      user.save();
+      res.status(200).json({
+        success: true,
+        message: "Su cuenta se ha activado con éxito",
+      });
+    }
+  } catch (error) {
+    res.status(400).json({ success: false, message: "Usuario inválido" });
+  }
 };
 
 exports.getAllUsers = async (req, res, next) => {

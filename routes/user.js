@@ -7,6 +7,7 @@ const {
   forgotPassword,
   resetPassword,
   getAllUsers,
+  confirmEmail,
 } = require("../controllers/userController");
 
 const router = express.Router();
@@ -16,6 +17,7 @@ router.route("/login").post(loginUser);
 router.route("/logout").get(logout);
 router.route("/forgotPassword").post(forgotPassword);
 router.route("/resetPassword/:token").put(resetPassword);
+router.route("/confirm/:token").put(confirmEmail);
 router
   .route("/getUserDetails")
   .get(isAuthenticateUser, authorizeRoles("admin"), getAllUsers);

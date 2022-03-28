@@ -57,7 +57,10 @@ const UserSchema = new mongoose.Schema({
     { city: { type: String, required: true } },
     { street: { type: String, required: true } },
   ],
-
+  verify: {
+    type: Boolean,
+    default: false,
+  },
   webSite: {
     type: String,
   },
