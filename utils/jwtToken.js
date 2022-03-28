@@ -10,11 +10,10 @@ const sendToken = (user, statusCode, res) => {
     secure: true,
     sameSite: "none",
   };
-  res.status(statusCode).cookie("token", token, cookieOptions).json({
+  res.status(statusCode).cookie("token", token, httpOnlyCookieOptions).json({
     sucess: true,
     user,
   });
-
 };
 
 module.exports = sendToken;
