@@ -5,7 +5,7 @@ const HotelInfo = require("../api/hotels/response/HotelInfo");
 const getMockHotelsInformation = require("../mock/mockHotels");
 
 const getHotels = async ({ checkIn, checkOut, rooms, adults, children, city }) => {
-    const payload = buildHotelRequest({ checkIn, checkOut, rooms, adults, children, city });
+    const payload = await buildHotelRequest({ checkIn, checkOut, rooms, adults, children, city });
 
     const url = process.env.HOTELS_API_URI.concat('/hotels');
 
@@ -27,13 +27,12 @@ const getHotels = async ({ checkIn, checkOut, rooms, adults, children, city }) =
     let hotels = [];
 
     try {
-        if (process.env.HOTELS_MOCK) {
-            console.log("Mocking hotels' information");
+        if (process.env.HOTELS_MOCK === 'MOCK_TRUE') {
             hotels = getMockHotelsInformation();
         }
         else {
             response = await axios.post(url, payload, config);
-            console.log('Number of available hotels:', response.data?.hotels.hotels.length);
+            console.log('Number of available hotels:', response.data?.hotels.hotels?.length === undefined ? 0 : response.data?.hotels.hotels?.length);
 
             if (response.data?.hotels.hotels != null) {
                 response.data?.hotels.hotels.map(hotel =>
