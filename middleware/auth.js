@@ -2,8 +2,9 @@ const jwt = require("jsonwebtoken");
 const User = require("../models/userModel");
 
 exports.isAuthenticateUser = async (req, res, next) => {
-  const token = parseCookies(req)?.token;
 
+  //const token = parseCookies(req)?.token;
+  const { token } = req.cookies;
   if (!token) {
     return res.status(401).json({
       sucess: false,
@@ -32,7 +33,7 @@ exports.isAuthenticateUser = async (req, res, next) => {
   }
 
   req.user = await User.findById(decodedData.id);
-  console.log(req.user);
+
   if (!req.user) {
     return res.status(401).json({
       sucess: false,
@@ -52,21 +53,4 @@ exports.authorizeRoles = (...roles) => {
     }
     next();
   };
-};
-
-const parseCookies = (request) => {
-  const list = {};
-  const cookieHeader = request.headers?.cookie;
-  if (!cookieHeader) return list;
-
-  cookieHeader.split(`;`).forEach((cookie) => {
-    let [name, ...rest] = cookie.split(`=`);
-    name = name?.trim();
-    if (!name) return;
-    const value = rest.join(`=`).trim();
-    if (!value) return;
-    list[name] = decodeURIComponent(value);
-  });
-
-  return list;
 };
