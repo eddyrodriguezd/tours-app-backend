@@ -51,15 +51,19 @@ const UserSchema = new mongoose.Schema({
       },
     },
   ],
-  address: [
-    { country: { type: String, required: true } },
-    { state: { type: String, required: true } },
-    { city: { type: String, required: true } },
-    { street: { type: String, required: true } },
-  ],
+
   verify: {
     type: Boolean,
     default: false,
+},
+  address: {
+    country: { type: String },
+    tate: { type: String },
+    city: { type: String },
+    street: { type: String },
+  },
+  empresa: {
+    type: String,
   },
   webSite: {
     type: String,
@@ -76,7 +80,7 @@ UserSchema.pre("save", async function (next) {
 
 UserSchema.methods.getJWTToken = function () {
   return jwt.sign({ id: this._id }, process.env.JWT_SECRET, {
-    expiresIn: process.env.JWT_EXPIRE,
+    expiresIn: process.env.JWT_EXPIRES_IN_SECONDS * 1000,
   });
 };
 
