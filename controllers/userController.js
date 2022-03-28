@@ -60,6 +60,15 @@ exports.loginUser = async (req, res) => {
 
   sendToken(user, 200, res);
 };
+
+exports.getMiself = async (req, res) => {
+  const user = await User.findById(req.user.id);
+  return res.status(200).json({
+    success: true,
+    user,
+  });
+};
+
 exports.logout = async (req, res) => {
   res.cookie("token", null, {
     expires: new Date(Date.now()),
