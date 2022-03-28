@@ -5,7 +5,7 @@ const sendEmail = async (options) => {
   const transporter = nodeMailer.createTransport({
     host: process.env.SMTP_HOST,
     port: process.env.SMTP_PORT,
-    service: process.env.SMPT_SERVICE,
+    service: process.env.SMT_SERVICE,
 
     auth: {
       user: process.env.SMTP_MAIL,
@@ -23,15 +23,15 @@ const sendEmail = async (options) => {
 
 const sendEmailTemplates = ({
   to,
-  from,
   templateId,
   dynamic_template_data,
 }) => {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
   sgMail
     .send({
       to,
-      from,
+      from: process.env.SMTP_MAIL,
       templateId,
       dynamic_template_data,
     })
