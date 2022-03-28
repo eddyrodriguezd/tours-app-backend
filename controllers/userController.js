@@ -13,7 +13,7 @@ cloudinary.config({
 
 
 exports.registerUser = async (req, res) => {
-  const { email, password, tipo, ...data } = req.body;
+  const { email, password, name, tipo, ...data } = req.body;
 
   if (!email || !password) {
     res.status(400).json({
@@ -25,6 +25,7 @@ exports.registerUser = async (req, res) => {
     const user = await User.create({
       email,
       password,
+      name,
       tipo,
       data,
     });
@@ -35,9 +36,8 @@ exports.registerUser = async (req, res) => {
       from: { email: "moranrosales23@hotmail.com", name: "Tours App" },
       dynamic_template_data: {
         name_user: email.split("@")[0],
-        url_activar: `${
-          process.env.FRONT_URL
-        }/confirmacion/${user.getJWTToken()}`,
+        url_activar: `${process.env.FRONT_URL
+          }/confirmacion/${user.getJWTToken()}`,
       },
     };
     send.sendEmailTemplates(config);
