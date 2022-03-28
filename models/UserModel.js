@@ -51,6 +51,11 @@ const UserSchema = new mongoose.Schema({
       },
     },
   ],
+
+  verify: {
+    type: Boolean,
+    default: false,
+},
   address: {
     country: { type: String },
     tate: { type: String },

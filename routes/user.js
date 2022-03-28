@@ -11,9 +11,11 @@ const {
   forgotPassword,
   resetPassword,
   getAllUsers,
+  confirmEmail,
   getUser,
   updateProfile,
 } = require("../controllers/UserController");
+
 
 const router = express.Router();
 
@@ -24,7 +26,7 @@ router.route("/all").get(getAllUsers);
 router.route("/logout").get(logout);
 router.route("/forgotPassword").post(forgotPassword);
 router.route("/resetPassword/:token").put(resetPassword);
-
+router.route("/confirm/:token").put(confirmEmail);
 router.route("/user/:id").get(getUser);
 router
   .route("/getUserDetails")
