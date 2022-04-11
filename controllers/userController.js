@@ -1,4 +1,4 @@
-const User = require("../models/userModel");
+const User = require("../models/user");
 const sendToken = require("../utils/jwtToken");
 const send = require("../utils/sendEmail");
 const crypto = require("crypto");
@@ -11,10 +11,21 @@ cloudinary.config({
   api_secret: "kDnGezb0yopoQZ3SAyWObnQjBIA",
 });
 
-
 exports.registerUser = async (req, res) => {
-  const { email, password, name, tipo, ...data } = req.body;
-
+  const { email, password, tipo, ...data } = req.body;
+  const objBusiness = {
+    name: data.name,
+    business: {
+      name: data.name,
+      type: data.type,
+      ruc: data.ruc,
+    },
+    address: data.address,
+    location: data.location,
+    province: data.province,
+    region: data.region,
+    district: data.district,
+  };
   if (!email || !password) {
     res.status(400).json({
       sucess: false,
@@ -25,19 +36,19 @@ exports.registerUser = async (req, res) => {
     const user = await User.create({
       email,
       password,
-      name,
       tipo,
-      data,
+      ...objBusiness,
     });
-    //const fullUrl = req.protocol + "://" + req.get("host") + "/user/confirm";
+
     const config = {
       templateId: "d-dc9eeacf9528476ba89bf402bb5ad859",
       to: email,
       from: { email: "moranrosales23@hotmail.com", name: "Tours App" },
       dynamic_template_data: {
         name_user: email.split("@")[0],
-        url_activar: `${process.env.FRONT_URL
-          }/confirmacion/${user.getJWTToken()}`,
+        url_activar: `${
+          process.env.FRONT_URL
+        }/confirmacion/${user.getJWTToken()}`,
       },
     };
     send.sendEmailTemplates(config);
@@ -55,7 +66,7 @@ exports.loginUser = async (req, res) => {
   if (!email || !password) {
     return res.status(400).json({
       sucess: false,
-      message: " Por favor ingrese correo electrónico y contraseña",
+      message: "Ingrese correo electrónico y contraseña",
     });
   }
   const user = await User.findOne({ email }).select("+password");
@@ -177,7 +188,6 @@ exports.confirmEmail = async (req, res) => {
     res.status(400).json({ success: false, message: "Usuario inválido" });
   }
 };
-
 
 exports.getUser = async (req, res) => {
   const { id } = req.params;

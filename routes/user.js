@@ -2,6 +2,7 @@ const express = require("express");
 const multer = require("multer");
 
 const upload = multer({ dest: "./temp" });
+const { business } = require("../middleware/business");
 const { isAuthenticateUser, authorizeRoles } = require("../middleware/auth");
 const {
   registerUser,
@@ -16,10 +17,9 @@ const {
   updateProfile,
 } = require("../controllers/UserController");
 
-
 const router = express.Router();
 
-router.route("/register").post(registerUser);
+router.route("/register").post(business, registerUser);
 router.route("/login").post(loginUser);
 router.route("/me").get(isAuthenticateUser, getMiself);
 router.route("/all").get(getAllUsers);

@@ -21,11 +21,7 @@ const sendEmail = async (options) => {
   await transporter.sendMail(mailOptions);
 };
 
-const sendEmailTemplates = ({
-  to,
-  templateId,
-  dynamic_template_data,
-}) => {
+const sendEmailTemplates = ({ to, templateId, dynamic_template_data }) => {
   sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
   sgMail
@@ -39,7 +35,7 @@ const sendEmailTemplates = ({
       console.log("Email sent");
     })
     .catch((error) => {
-      console.error(error);
+      console.error(error.response.body);
     });
 };
 
