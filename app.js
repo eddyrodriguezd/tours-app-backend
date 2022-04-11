@@ -14,7 +14,7 @@ app.use(express.json());
 const corsOptions = {
   credentials: true,
   allowedHeaders: ["Content-Type", "Authorization"],
-  origin: "http://localhost:3000",
+  origin: ["http://localhost:3000", "https://sendgrid.api-docs.io"],
 };
 app.use(cors(corsOptions));
 

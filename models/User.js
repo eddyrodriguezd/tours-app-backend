@@ -6,8 +6,6 @@ const crypto = require("crypto");
 const UserSchema = new mongoose.Schema({
   name: {
     type: String,
-    maxlength: [50, "El nombre no puede exceder los 50 caracteres"],
-    minlength: [4, "El nombre debe tener al menos 4 caracteres"],
   },
   email: {
     type: String,
@@ -23,18 +21,18 @@ const UserSchema = new mongoose.Schema({
   avatar: {
     public_id: {
       type: String,
+      default: "166246_zzulcy",
     },
     url: {
       type: String,
+      default:
+        "https://res.cloudinary.com/dmorxcs1y/image/upload/v1649306884/166246_zzulcy.png",
     },
   },
   tipo: {
     type: String, //enum
-    enum: ["admin", "user"],
+    enum: ["admin", "user", "business"],
     default: "user",
-  },
-  ruc: {
-    type: String,
   },
   phone: {
     type: String,
@@ -55,16 +53,37 @@ const UserSchema = new mongoose.Schema({
   verify: {
     type: Boolean,
     default: false,
-},
-  address: {
-    country: { type: String },
-    tate: { type: String },
-    city: { type: String },
-    street: { type: String },
   },
-  empresa: {
+  business: {
+    name: {
+      type: String,
+    },
+    type: {
+      type: String,
+    },
+
+    ruc: {
+      type: String,
+    },
+  },
+
+  address: {
     type: String,
   },
+  location: {
+    type: String,
+  },
+
+  province: {
+    type: String,
+  },
+  region: {
+    type: String,
+  },
+  district: {
+    type: String,
+  },
+
   webSite: {
     type: String,
   },
