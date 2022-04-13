@@ -28,12 +28,15 @@ async function findTour(req, res) {
 async function registerTour(req, res) {
   try {
     const { files } = req;
+    const { user } = req;
+    console.log(user);
     const arrayImg = await pushImages(files);
 
     const body = req.body;
 
     const tour = Object.create(Tour);
     tour.title = body.title;
+    tour.idUser = body.idUser;
     tour.description = body.description;
     tour.destination = body.destination;
     tour.categori = body.categori;
@@ -76,8 +79,41 @@ async function getTours(req, res) {
   res.status(200).send({ value: tour });
 }
 
+async function updateTour(req, res) {
+  try {
+    const { files } = req;
+    const arrayImg = await pushImages(files);
+
+    const body = req.body;
+
+    const tour = Object.create(Tour);
+    tour.title = body.title;
+    tour.idUser = body.idUser;
+    tour.description = body.description;
+    tour.destination = body.destination;
+    tour.categori = body.categori;
+    tour.price = body.price;
+    tour.nDays = body.nDays;
+    tour.startDate = body.startDate;
+    tour.endDate = body.endDate;
+    tour.images = arrayImg;
+    tour.itinerary = JSON.parse(body.itinerary);
+
+    const tourRequest = await findByIdAndUpdate(body._id, tour, { new: true });
+
+    res
+      .status(201)
+      .send({ message: "successfully update tour", value: tourRequest });
+  } catch (err) {
+    res.status(400).send({
+      message: `failed operation. ${err}`,
+    });
+  }
+}
+
 module.exports = {
   registerTour,
   getTours,
   findTour,
+  updateTour,
 };
