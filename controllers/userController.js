@@ -1,8 +1,9 @@
-const User = require("../models/userModel");
+const User = require("../models/user");
 const sendToken = require("../utils/jwtToken");
-const sendEmail = require("../utils/sendEmail");
-const fs = require("fs");
+const send = require("../utils/sendEmail");
 const crypto = require("crypto");
+const jwt = require("jsonwebtoken");
+const fs = require("fs");
 const cloudinary = require("cloudinary").v2;
 cloudinary.config({
   cloud_name: "dmorxcs1y",
@@ -12,7 +13,19 @@ cloudinary.config({
 
 exports.registerUser = async (req, res) => {
   const { email, password, tipo, ...data } = req.body;
-
+  const objBusiness = {
+    name: data.name,
+    business: {
+      name: data.name,
+      type: data.type,
+      ruc: data.ruc,
+    },
+    address: data.address,
+    location: data.location,
+    province: data.province,
+    region: data.region,
+    district: data.district,
+  };
   if (!email || !password) {
     res.status(400).json({
       sucess: false,
@@ -24,8 +37,21 @@ exports.registerUser = async (req, res) => {
       email,
       password,
       tipo,
-      data,
+      ...objBusiness,
     });
+
+    const config = {
+      templateId: "d-dc9eeacf9528476ba89bf402bb5ad859",
+      to: email,
+      from: { email: "moranrosales23@hotmail.com", name: "Tours App" },
+      dynamic_template_data: {
+        name_user: email.split("@")[0],
+        url_activar: `${
+          process.env.FRONT_URL
+        }/confirmacion/${user.getJWTToken()}`,
+      },
+    };
+    send.sendEmailTemplates(config);
     sendToken(user, 201, res);
   } catch (err) {
     res.status(400).json({
@@ -40,7 +66,7 @@ exports.loginUser = async (req, res) => {
   if (!email || !password) {
     return res.status(400).json({
       sucess: false,
-      message: " Por favor ingrese correo electrónico y contraseña",
+      message: "Ingrese correo electrónico y contraseña",
     });
   }
   const user = await User.findOne({ email }).select("+password");
@@ -60,6 +86,15 @@ exports.loginUser = async (req, res) => {
 
   sendToken(user, 200, res);
 };
+
+exports.getMiself = async (req, res) => {
+  const user = await User.findById(req.user.id);
+  return res.status(200).json({
+    success: true,
+    user,
+  });
+};
+
 exports.logout = async (req, res) => {
   res.cookie("token", null, {
     expires: new Date(Date.now()),
@@ -86,7 +121,7 @@ exports.forgotPassword = async (req, res) => {
 
   const message = `su token de restablecimiento de contraseña es :- \n\n ${resetPasswordUrl} \n\n si no solicitó este restablecimiento, ignore este correo electrónico`;
   try {
-    await sendEmail({
+    await send.sendEmail({
       email: user.email,
       subject: "Restablece su contraseña",
       message,
@@ -132,11 +167,32 @@ exports.resetPassword = async (req, res) => {
   sendToken(user, 200, res);
 };
 
+exports.confirmEmail = async (req, res) => {
+  try {
+    const decoded = jwt.verify(req.params.token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id);
+    if (user.verify) {
+      res.status(400).json({
+        success: false,
+        message: "Esta cuenta ya se encuentra verificada",
+      });
+    } else {
+      user.verify = true;
+      user.save();
+      res.status(200).json({
+        success: true,
+        message: "Su cuenta se ha activado con éxito",
+      });
+    }
+  } catch (error) {
+    res.status(400).json({ success: false, message: "Usuario inválido" });
+  }
+};
+
 exports.getUser = async (req, res) => {
   const { id } = req.params;
   try {
     const user = await User.find({ _id: id });
-
     return res.status(200).json({
       success: true,
       user,

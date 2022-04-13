@@ -1,5 +1,12 @@
-const buildHotelRequest = ({ checkIn, checkOut, rooms, adults, children, city }) => {
-    //TODO: Get geolocation based on city information
+const DestinyService = require("../../services/DestinyService");
+
+const buildHotelRequest = async ({ checkIn, checkOut, rooms, adults, children, city }) => {
+    const destiny = await DestinyService.find(city);
+
+    if (destiny[0] === undefined) {
+        throw new Error("Destination city not found");
+    }
+    console.log('destination', destiny[0]);
 
     return {
         stay: {
@@ -14,8 +21,8 @@ const buildHotelRequest = ({ checkIn, checkOut, rooms, adults, children, city })
             }
         ],
         geolocation: {
-            latitude: -12.025810,
-            longitude: -77.065840,
+            latitude: destiny[0].latitude,
+            longitude: destiny[0].longitude,
             radius: 10,
             unit: "km"
         }

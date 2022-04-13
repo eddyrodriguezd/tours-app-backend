@@ -1,9 +1,11 @@
 const nodeMailer = require("nodemailer");
+const sgMail = require("@sendgrid/mail");
+
 const sendEmail = async (options) => {
   const transporter = nodeMailer.createTransport({
     host: process.env.SMTP_HOST,
     port: process.env.SMTP_PORT,
-    service: process.env.SMPT_SERVICE,
+    service: process.env.SMT_SERVICE,
 
     auth: {
       user: process.env.SMTP_MAIL,
@@ -19,4 +21,22 @@ const sendEmail = async (options) => {
   await transporter.sendMail(mailOptions);
 };
 
-module.exports = sendEmail;
+const sendEmailTemplates = ({ to, templateId, dynamic_template_data }) => {
+  sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+  sgMail
+    .send({
+      to,
+      from: process.env.SMTP_MAIL,
+      templateId,
+      dynamic_template_data,
+    })
+    .then(() => {
+      console.log("Email sent");
+    })
+    .catch((error) => {
+      console.error(error.response.body);
+    });
+};
+
+module.exports = { sendEmail, sendEmailTemplates };

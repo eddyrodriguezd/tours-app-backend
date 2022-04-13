@@ -1,4 +1,5 @@
 const ReservationSchema = require('../models/Reservation');
+const { sendEmailTemplates } = require("../utils/sendEmail");
 
 const addReservation = ({ tour, startDate, endDate, members, hotel }, user) => {
     const contactInfo = {
@@ -9,7 +10,21 @@ const addReservation = ({ tour, startDate, endDate, members, hotel }, user) => {
 
     const reservation = new ReservationSchema({ tour, contactInfo, startDate, endDate, members, hotel });
     console.log(`Reservation <${JSON.stringify(reservation)}> received`);
-    return reservation.save();
+
+    const reservationCreated = reservation.save();
+
+    sendEmailTemplates({
+        to: user.email,
+        templateId: process.env.SENDGRID_TEMPLATE_RESERVATION_CONFIRMED_ID,
+        dynamic_template_data: {
+            clientName: user.name,
+            city: reservation.tour.destination.city,
+            startDate: reservation.startDate,
+            endDate: reservation.endDate
+        },
+    });
+
+    return reservationCreated;
 };
 
 const getReservationsByUser = (user) => {

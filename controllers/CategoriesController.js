@@ -1,6 +1,6 @@
 const CategoriesService = require("../services/CategoriesService");
 
-register = async (req, res) => {
+const register = async (req, res) => {
   try {
     const category = await CategoriesService.add(req.body);
     res.status(201).send({ message: "Category created", value: category });
@@ -9,7 +9,7 @@ register = async (req, res) => {
   }
 };
 
-getAll = async (req, res) => {
+const getAll = async (req, res) => {
   const categories = await CategoriesService.getAll();
   res.status(200).send({ value: categories });
 };

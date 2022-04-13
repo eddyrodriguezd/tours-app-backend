@@ -1,18 +1,19 @@
 const sendToken = (user, statusCode, res) => {
-
   const token = user.getJWTToken();
+  const expDate = new Date(
+    Date.now() + process.env.JWT_COOKIE_EXPIRES_IN_SECONDS * 1000
+  );
 
-  const cookieOptions = {
-    expires: new Date(
-      Date.now() + process.env.COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000
-    ),
+  const httpOnlyCookieOptions = {
+    expires: expDate,
     httpOnly: true,
     secure: true,
-    sameSite: 'none'
+    sameSite: "none",
   };
 
-  res.status(statusCode).cookie("token", token, cookieOptions).json({
+  res.status(statusCode).cookie("token", token, httpOnlyCookieOptions).json({
     sucess: true,
+    user,
   });
 };
 
