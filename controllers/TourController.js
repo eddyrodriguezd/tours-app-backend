@@ -29,14 +29,16 @@ async function registerTour(req, res) {
   try {
     const { files } = req;
     const { user } = req;
-    console.log(user);
-    const arrayImg = await pushImages(files);
+    const arrayImg = [];
+    if (files) {
+      arrayImg = await pushImages(files);
+    }
 
     const body = req.body;
 
     const tour = Object.create(Tour);
     tour.title = body.title;
-    tour.idUser = body.idUser;
+    tour.idUser = user._id;
     tour.description = body.description;
     tour.destination = body.destination;
     tour.categori = body.categori;
@@ -46,7 +48,7 @@ async function registerTour(req, res) {
     tour.endDate = body.endDate;
     tour.images = arrayImg;
     tour.itinerary = JSON.parse(body.itinerary);
-
+    
     const tourRequest = await addTour(tour);
 
     res

@@ -1,6 +1,5 @@
 const { isAuthenticateUser, authorizeRoles } = require("../middleware/auth");
 const express = require("express");
-const { isAuthenticateUser } = require("../middleware/auth");
 
 const multer = require("multer");
 const storage = multer.diskStorage({
