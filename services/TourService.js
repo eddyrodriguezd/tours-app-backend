@@ -12,9 +12,7 @@ async function findTourModel(field, value) {
 }
 
 async function addTour(tour) {
-  try {
-    console.log("servide");
-    console.log(tour.itinerary);
+  try {        
     const tourAdd = await Tour.create(tour);
     return tourAdd;
   } catch (err) {

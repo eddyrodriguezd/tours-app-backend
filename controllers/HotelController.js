@@ -2,8 +2,7 @@ const HotelService = require('../services/HotelService');
 
 fetchByCity = async (req, res) => {
     try {
-        const hotels = await HotelService.getHotels(req.body);
-        console.log(`Hotels fetched:`, hotels);
+        const hotels = await HotelService.getHotels(req.body);        
         res.status(200).send({ action: 'Hotels fetched', value: hotels })
     }
     catch (err) {
