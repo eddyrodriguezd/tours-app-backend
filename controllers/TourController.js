@@ -26,30 +26,27 @@ async function findTour(req, res) {
 }
 
 async function registerTour(req, res) {
+  //console.log(req.body);
   try {
     const { files } = req;
     const { user } = req;
-    const arrayImg = [];
+    let arrayImg = [];
     if (files) {
       arrayImg = await pushImages(files);
+      console.log(arrayImg);
     }
 
-    const body = req.body;
-
-    const tour = Object.create(Tour);
-    tour.title = body.title;
-    tour.idUser = user._id;
-    tour.description = body.description;
-    tour.destination = body.destination;
-    tour.categori = body.categori;
-    tour.price = body.price;
-    tour.nDays = body.nDays;
-    tour.startDate = body.startDate;
-    tour.endDate = body.endDate;
-    tour.images = arrayImg;
-    tour.itinerary = JSON.parse(body.itinerary);
-    
-    const tourRequest = await addTour(tour);
+    const { itinerary, ...data } = req.body;
+    console.log(data);
+    const tours = {
+      ...data,
+      idUser: user._id,
+      images: arrayImg,
+      itinerary: JSON.parse(itinerary),
+    };
+    console.log(tours);
+    const tourRequest = await addTour(tours);
+    console.log(tourRequest);
 
     res
       .status(201)
