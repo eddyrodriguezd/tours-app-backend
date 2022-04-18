@@ -20,7 +20,6 @@ const corsOptions = {
   ],
 };
 app.use(cors(corsOptions));
-
 app.use("/api/reservation", reservation);
 app.use("/api/users", user);
 app.use("/api/category", categories);
