@@ -20,7 +20,7 @@ const {
 
 const api = express.Router();
 
-api.post("/create", upload.any("images"), registerTour);
+api.post("/create", isAuthenticateUser, upload.any("images"), registerTour);
 //api.post("/findTour", isAuthenticateUser, authorizeRoles("admin"), findTour);
 api.get("/fetch", getTours);
 
