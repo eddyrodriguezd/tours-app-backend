@@ -15,7 +15,7 @@ const {
   confirmEmail,
   getUser,
   updateProfile,
-} = require("../controllers/UserController");
+} = require("../controllers/userController");
 
 const router = express.Router();
 
