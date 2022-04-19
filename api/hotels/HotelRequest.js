@@ -9,7 +9,7 @@ const buildHotelRequest = async ({
   city,
 }) => {
   const destiny = await DestinyService.find(city);
-
+  console.log(destiny);
   if (destiny[0] === undefined) {
     throw new Error("Destination city not found");
   }

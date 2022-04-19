@@ -17,6 +17,7 @@ const corsOptions = {
   origin: [
     "https://toursapp123456789.netlify.app",
     "https://sendgrid.api-docs.io",
+    "http://localhost:3000",
   ],
 };
 app.use(cors(corsOptions));

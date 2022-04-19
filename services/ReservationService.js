@@ -1,19 +1,28 @@
-const ReservationSchema = require('../models/Reservation');
+const ReservationSchema = require("../models/Reservation");
 const { sendEmailTemplates } = require("../utils/sendEmail");
 
 const addReservation = ({ tour, startDate, endDate, members, hotel }, user) => {
-    const contactInfo = {
-        clientId: user._id.toString(),
-        email: user.email,
-        phone: user.phone
-    }
+  const contactInfo = {
+    clientId: user._id.toString(),
+    email: user.email,
+    phone: user.phone,
+  };
+  console.log(tour);
+  console.log("te bailo sabroso");
 
-    const reservation = new ReservationSchema({ tour, contactInfo, startDate, endDate, members, hotel });
-    console.log(`Reservation <${JSON.stringify(reservation)}> received`);
+  const reservation = new ReservationSchema({
+    tour,
+    contactInfo,
+    startDate,
+    endDate,
+    members,
+    hotel,
+  });
+  console.log(`Reservation <${JSON.stringify(reservation)}> received`);
 
-    const reservationCreated = reservation.save();
+  const reservationCreated = reservation.save();
 
-    sendEmailTemplates({
+  /*sendEmailTemplates({
         to: user.email,
         templateId: process.env.SENDGRID_TEMPLATE_RESERVATION_CONFIRMED_ID,
         dynamic_template_data: {
@@ -23,15 +32,15 @@ const addReservation = ({ tour, startDate, endDate, members, hotel }, user) => {
             endDate: reservation.endDate
         },
     });
-
-    return reservationCreated;
+*/
+  return reservationCreated;
 };
 
 const getReservationsByUser = (user) => {
-    return ReservationSchema.findByClientId(user.id);
-}
+  return ReservationSchema.findByClientId(user.id);
+};
 
 module.exports = {
-    addReservation,
-    getReservationsByUser
+  addReservation,
+  getReservationsByUser,
 };
