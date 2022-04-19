@@ -15,7 +15,7 @@ const corsOptions = {
   credentials: true,
   allowedHeaders: ["Content-Type", "Authorization"],
   origin: [
-    "https://toursapp123456789.netlify.app",
+    "https://toursapp123456789.netlify.app/",
     "https://sendgrid.api-docs.io",
   ],
 };
@@ -25,5 +25,4 @@ app.use("/api/users", user);
 app.use("/api/category", categories);
 app.use("/api/tour", tours);
 app.use("/api/destiny", destinies);
-
 module.exports = app;
