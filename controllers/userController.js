@@ -40,7 +40,7 @@ exports.registerUser = async (req, res) => {
       ...objBusiness,
     });
 
-    const config = {
+    /*const config = {
       templateId: "d-dc9eeacf9528476ba89bf402bb5ad859",
       to: email,
       from: { email: "moranrosales23@hotmail.com", name: "Tours App" },
@@ -51,9 +51,11 @@ exports.registerUser = async (req, res) => {
         }/confirmacion/${user.getJWTToken()}`,
       },
     };
-    send.sendEmailTemplates(config);
+    send.sendEmailTemplates(config);*/
     sendToken(user, 201, res);
   } catch (err) {
+    console.log(err);
+    console.log("error");
     res.status(400).json({
       sucess: false,
       error: err,
